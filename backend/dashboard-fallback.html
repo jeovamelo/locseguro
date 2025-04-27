@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOC Seguro - Dashboard (Fallback)</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/auth-styles.css">
+    <link rel="stylesheet" href="css/demo-mode.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .fallback-notice {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .user-info {
+            flex: 1;
+            min-width: 300px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-info h2 {
+            color: #0056b3;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        
+        .user-info p {
+            margin: 10px 0;
+        }
+        
+        .dashboard-actions {
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .dashboard-actions h2 {
+            color: #0056b3;
+            margin-bottom: 15px;
+        }
+        
+        .action-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .action-card {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .action-card i {
+            font-size: 2rem;
+            color: #0056b3;
+            margin-bottom: 15px;
+        }
+        
+        .action-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .action-card p {
+            color: #666;
+            margin-bottom: 15px;
+            min-height: 40px;
+        }
+        
+        .dashboard-section {
+            margin-top: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-header h2 {
+            color: #0056b3;
+            margin: 0;
+        }
+        
+        .retry-button {
+            display: inline-block;
+            background-color: #0056b3;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        
+        .retry-button:hover {
+            background-color: #003d82;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">LOC<span>Seguro</span></a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                    <li><a href="javascript:void(0);" onclick="logout()">Sair</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="page-header">
+                <h1>Dashboard (Modo Fallback)</h1>
+                <p>Bem-vindo ao seu painel de controle</p>
+            </div>
+            
+            <div class="fallback-notice">
+                <p><strong>Aviso:</strong> O sistema está operando em modo de fallback devido a problemas de conexão. Algumas funcionalidades podem estar limitadas.</p>
+                <button class="retry-button" onclick="retryConnection()">
+                    <i class="fas fa-sync-alt"></i> Tentar novamente
+                </button>
+            </div>
+            
+            <div class="dashboard-container">
+                <div class="user-info">
+                    <h2>Informações do Usuário</h2>
+                    <div id="user-details">
+                        <!-- Detalhes do usuário serão preenchidos via JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="dashboard-actions">
+                    <h2>Ações Disponíveis</h2>
+                    <div id="actions-container">
+                        <!-- Ações serão preenchidas via JavaScript baseado no tipo de usuário -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Seção de Carros (visível apenas para locadoras) -->
+            <div id="carros-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h2>Meus Carros</h2>
+                    <a href="cadastro-carro.html" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> Adicionar Carro
+                    </a>
+                </div>
+                <div id="carros-container">
+                    <p>Carregando dados dos carros...</p>
+                </div>
+            </div>
+            
+            <!-- Seção de Clientes (visível apenas para locadoras) -->
+            <div id="clientes-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h2>Meus Clientes</h2>
+                </div>
+                <div id="clientes-container">
+                    <p>Carregando dados dos clientes...</p>
+                </div>
+            </div>
+            
+            <!-- Seção de Locações -->
+            <div id="locacoes-section" class="dashboard-section" style="display: none;">
+                <div class="section-header">
+                    <h2>Minhas Locações</h2>
+                </div>
+                <div id="locacoes-container">
+                    <p>Carregando dados das locações...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 LOC Seguro - Sistema de Locação de Carros com Avaliação e Multa</p>
+        </div>
+    </footer>
+
+    <div class="demo-mode-indicator">MODO DEMONSTRAÇÃO</div>
+
+    <script src="js/demo-data.js"></script>
+    <script src="js/demo-mode.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se o usuário está autenticado
+            const usuarioJSON = localStorage.getItem('usuario');
+            if (!usuarioJSON) {
+                window.location.href = 'login.html?error=session_expired';
+                return;
+            }
+            
+            try {
+                const usuario = JSON.parse(usuarioJSON);
+                
+                // Preencher informações do usuário
+                const userDetails = document.getElementById('user-details');
+                
+                // Obter detalhes adicionais do usuário (simulado no modo demo)
+                let detalhesUsuario = {};
+                let locadoraAtual = null;
+                let locatarioAtual = null;
+                
+                if (usuario.tipo === 'locadora') {
+                    // Mostrar seções específicas para locadoras
+                    document.getElementById('carros-section').style.display = 'block';
+                    document.getElementById('clientes-section').style.display = 'block';
+                    document.getElementById('locacoes-section').style.display = 'block';
+                    
+                    detalhesUsuario = {
+                        nome_fantasia: 'Nome da Locadora',
+                        cnpj: '12.345.678/0001-90',
+                        avaliacao: '4.5/5.0'
+                    };
+                    
+                    if (window.demoStorage && window.demoStorage.locadoras) {
+                        // No modo demo, buscar dados da locadora
+                        locadoraAtual = window.demoStorage.locadoras.find(l => l.usuario_id.toString() === usuario.id.toString());
+                        if (locadoraAtual) {
+                            detalhesUsuario = {
+                                nome_fantasia: locadoraAtual.nome_fantasia,
+                                cnpj: locadoraAtual.cnpj,
+                                avaliacao: (locadoraAtual.avaliacao_media || 4.5) + '/5.0'
+                            };
+                        }
+                    }
+                    
+                    userDetails.innerHTML = `
+                        <p><strong>Tipo:</strong> Locadora</p>
+                        <p><strong>Email:</strong> ${usuario.email}</p>
+                        <p><strong>Nome Fantasia:</strong> ${detalhesUsuario.nome_fantasia}</p>
+                        <p><strong>CNPJ:</strong> ${detalhesUsuario.cnpj}</p>
+                        <p><strong>Avaliação:</strong> ${detalhesUsuario.avaliacao}</p>
+                    `;
+                    
+                    // Preencher ações disponíveis
+                    const actionsContainer = document.getElementById('actions-container');
+                    actionsContainer.innerHTML = `
+                        <div class="action-cards">
+                            <div class="action-card">
+                                <i class="fas fa-car"></i>
+                                <h3>Cadastrar Carro</h3>
+                                <p>Adicione veículos à sua frota</p>
+                                <a href="cadastro-carro.html" class="btn btn-primary">Acessar</a>
+                            </div>
+                            
+                            <div class="action-card">
+                                <i class="fas fa-file-contract"></i>
+                                <h3>Cadastrar Locação</h3>
+                                <p>Registre novas locações</p>
+                                <a href="cadastro-locacao.html" class="btn btn-primary">Acessar</a>
+                            </div>
+                            
+                            <div class="action-card">
+                                <i class="fas fa-star"></i>
+                                <h3>Avaliações</h3>
+                                <p>Avalie locatários e veja suas avaliações</p>
+                                <a href="avaliacao.html" class="btn btn-primary">Acessar</a>
+                            </div>
+                            
+                            <div class="action-card">
+                                <i class="fas fa-search"></i>
+                                <h3>Consulta Pública</h3>
+                                <p>Consulte a reputação de locatários</p>
+                                <a href="consulta-publica.html" class="btn btn-primary">Acessar</a>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Carregar dados dos carros
+                    carregarCarrosFallback(usuario.id);
+                    
+                    // Carregar dados dos clientes
+                    carregarClientesFallback(usuario.id);
+                    
+                    // Carregar dados das locações
+                    carregarLocacoesFallback(usuario.id, 'locadora');
+                } else {
+                    // Mostrar seções específicas para locatários
+                    document.getElementById('locacoes-section').style.display = 'block';
+                    
+                    detalhesUsuario = {
+                        nome: 'Nome do Locatário',
+                        cpf: '123.456.789-00',
+                        avaliacao: '4.2/5.0'
+                    };
+                    
+                    if (window.demoStorage && window.demoStorage.locatarios) {
+                        // No modo demo, buscar dados do locatário
+                        locatarioAtual = window.demoStorage.locatarios.find(l => l.usuario_id.toString() === usuario.id.toString());
+                        if (locatarioAtual) {
+                            detalhesUsuario = {
+                                nome: locatarioAtual.nome,
+                                cpf: locatarioAtual.cpf,
+                                avaliacao: (locatarioAtual.avaliacao_media || 4.2) + '/5.0'
+                            };
+                        }
+                    }
+                    
+                    userDetails.innerHTML = `
+                        <p><strong>Tipo:</strong> Locatário</p>
+                        <p><strong>Email:</strong> ${usuario.email}</p>
+                        <p><strong>Nome:</strong> ${detalhesUsuario.nome}</p>
+                        <p><strong>CPF:</strong> ${detalhesUsuario.cpf}</p>
+                        <p><strong>Avaliação:</strong> ${detalhesUsuario.avaliacao}</p>
+                    `;
+                    
+                    // Preencher ações disponíveis
+                    const actionsContainer = document.getElementById('actions-container');
+                    actionsContainer.innerHTML = `
+                        <div class="action-cards">
+                            <div class="action-card">
+                                <i class="fas fa-search"></i>
+                                <h3>Pesquisar Carros</h3>
+                                <p>Encontre veículos disponíveis para locação</p>
+                                <a href="pesquisar-carros.html" class="btn btn-primary">Acessar</a>
+                            </div>
+                            
+                            <div class="action-card">
+                                <i class="fas fa-list"></i>
+                                <h3>Minhas Locações</h3>
+                                <p>Visualize suas locações ativas e históricas</p>
+                                <a href="minhas-locacoes.html" class="btn btn-primary">Acessar</a>
+                            </div>
+                            
+                            <div class="action-card">
+                                <i class="fas fa-star"></i>
+                                <h3>Avaliações</h3>
+                                <p>Avalie locadoras e veja suas avaliações</p>
+                                <a href="avaliacao.html" class="btn btn-primary">Acessar</a>
+                            </div>
+                            
+                            <div class="action-card">
+                                <i class="fas fa-search"></i>
+                                <h3>Consulta Pública</h3>
+                                <p>Consulte a reputação de locadoras</p>
+                                <a href="consulta-publica.html" class="btn btn-primary">Acessar</a>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Carregar dados das locações
+                    carregarLocacoesFallback(usuario.id, 'locatario');
+                }
+            } catch (error) {
+                console.error('Erro ao processar informações do usuário:', error);
+                window.location.href = 'login.html?error=invalid_session';
+            }
+        });
+        
+        // Função para carregar carros em modo fallback
+        function carregarCarrosFallback(locadoraId) {
+            const carrosContainer = document.getElementById('carros-container');
+            
+            if (!window.demoStorage || !window.demoStorage.carros) {
+                carrosContainer.innerHTML = '<p>Não foi possível carregar os dados dos carros no modo fallback.</p>';
+                return;
+            }
+            
+            const carros = window.demoStorage.carros.filter(c => c.locadora_id.toString() === locadoraId.toString());
+            
+            if (carros.length === 0) {
+                carrosContainer.innerHTML = '<p>Nenhum carro cadastrado.</p>';
+                return;
+            }
+            
+            let html = '<div class="cards-container">';
+            
+            carros.forEach(carro => {
+                html += `
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>${carro.marca} ${carro.modelo}</h3>
+                            <span class="badge ${carro.disponivel ? 'badge-success' : 'badge-danger'}">
+                                ${carro.disponivel ? 'Disponível' : 'Indisponível'}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Ano:</strong> ${carro.ano}</p>
+                            <p><strong>Placa:</strong> ${carro.placa}</p>
+                            <p><strong>Cor:</strong> ${carro.cor}</p>
+                            <p><strong>Quilometragem:</strong> ${carro.quilometragem} km</p>
+                            <p><strong>Valor Diária:</strong> R$ ${carro.valor_diaria.toFixed(2)}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            carrosContainer.innerHTML = html;
+            
+            // Adicionar estilos para os cards
+            const style = document.createElement('style');
+            style.textContent = `
+                .cards-container {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                    gap: 20px;
+                }
+                
+                .card {
+                    background-color: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    overflow: hidden;
+                }
+                
+                .card-header {
+                    background-color: #f2f2f2;
+                    padding: 15px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                
+                .card-header h3 {
+                    margin: 0;
+                    color: #333;
+                }
+                
+                .card-body {
+                    padding: 15px;
+                }
+                
+                .badge {
+                    display: inline-block;
+                    padding: 5px 10px;
+                    border-radius: 4px;
+                    font-size: 0.8rem;
+                    font-weight: bold;
+                }
+                
+                .badge-success {
+                    background-color: #e8f5e9;
+                    color: #2e7d32;
+                }
+                
+                .badge-danger {
+                    background-color: #ffebee;
+                    color: #c62828;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Função para carregar clientes em modo fallback
+        function carregarClientesFallback(locadoraId) {
+            const clientesContainer = document.getElementById('clientes-container');
+            
+            if (!window.demoStorage || !window.demoStorage.locacoes || !window.demoStorage.locatarios) {
+                clientesContainer.innerHTML = '<p>Não foi possível carregar os dados dos clientes no modo fallback.</p>';
+                return;
+            }
+            
+            const locacoes = window.demoStorage.locacoes.filter(l => l.locadora_id.toString() === locadoraId.toString());
+            
+            if (locacoes.length === 0) {
+                clientesContainer.innerHTML = '<p>Nenhum cliente encontrado.</p>';
+                return;
+            }
+            
+            // Obter IDs únicos de locatários
+            const locatarioIds = [...new Set(locacoes.map(l => l.locatario_id))];
+            
+            // Buscar detalhes dos locatários
+            const clientes = window.demoStorage.locatarios.filter(l => locatarioIds.includes(l.usuario_id));
+            
+            if (clientes.length === 0) {
+                clientesContainer.innerHTML = '<p>Nenhum cliente encontrado.</p>';
+                return;
+            }
+            
+            let html = '<div class="cards-container">';
+            
+            clientes.forEach(cliente => {
+                // Contar locações deste cliente com esta locadora
+                const totalLocacoes = locacoes.filter(l => l.locatario_id === cliente.usuario_id).length;
+                
+                html += `
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>${cliente.nome}</h3>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>CPF:</strong> ${cliente.cpf}</p>
+                            <p><strong>Telefone:</strong> ${cliente.telefone}</p>
+                            <p><strong>Avaliação:</strong> ${cliente.avaliacao_media ? cliente.avaliacao_media.toFixed(1) : '0.0'}/5.0</p>
+                            <p><strong>Total de Locações:</strong> ${totalLocacoes}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            clientesContainer.innerHTML = html;
+        }
+        
+        // Função para carregar locações em modo fallback
+        function carregarLocacoesFallback(usuarioId, tipo) {
+            const locacoesContainer = document.getElementById('locacoes-container');
+            
+            if (!window.demoStorage || !window.demoStorage.locacoes || !window.demoStorage.carros) {
+                locacoesContainer.innerHTML = '<p>Não foi possível carregar os dados das locações no modo fallback.</p>';
+                return;
+            }
+            
+            let locacoes = [];
+            
+            if (tipo === 'locadora') {
+                locacoes = window.demoStorage.locacoes.filter(l => l.locadora_id.toString() === usuarioId.toString());
+            } else {
+                locacoes = window.demoStorage.locacoes.filter(l => l.locatario_id.toString() === usuarioId.toString());
+            }
+            
+            if (locacoes.length === 0) {
+                locacoesContainer.innerHTML = '<p>Nenhuma locação encontrada.</p>';
+                return;
+            }
+            
+            let html = '<div class="cards-container">';
+            
+            locacoes.forEach(locacao => {
+                // Buscar detalhes do carro
+                const carro = window.demoStorage.carros.find(c => c.id === locacao.carro_id);
+                
+                // Buscar detalhes da outra parte (locadora ou locatário)
+                let outraParte = '';
+                if (tipo === 'locadora') {
+                    const locatario = window.demoStorage.locatarios.find(l => l.usuario_id === locacao.locatario_id);
+                    outraParte = locatario ? locatario.nome : 'Locatário não encontrado';
+                } else {
+                    const locadora = window.demoStorage.locadoras.find(l => l.usuario_id === locacao.locadora_id);
+                    outraParte = locadora ? locadora.nome_fantasia : 'Locadora não encontrada';
+                }
+                
+                // Verificar status da avaliação
+                let statusAvaliacao = '';
+                
+                if (locacao.status === 'Concluída') {
+                    if (tipo === 'locadora') {
+                        if (locacao.avaliacao_locadora) {
+                            statusAvaliacao = `${locacao.avaliacao_locadora.nota}/5`;
+                        } else {
+                            statusAvaliacao = 'Pendente';
+                        }
+                    } else {
+                        if (locacao.avaliacao_locatario) {
+                            statusAvaliacao = `${locacao.avaliacao_locatario.nota}/5`;
+                        } else {
+                            statusAvaliacao = 'Pendente';
+                        }
+                    }
+                } else {
+                    statusAvaliacao = 'N/A';
+                }
+                
+                html += `
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Locação #${locacao.id}</h3>
+                            <span class="badge badge-${getStatusClass(locacao.status)}">
+                                ${locacao.status}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>${tipo === 'locadora' ? 'Locatário' : 'Locadora'}:</strong> ${outraParte}</p>
+                            <p><strong>Carro:</strong> ${carro ? `${carro.marca} ${carro.modelo}` : 'Carro não encontrado'}</p>
+                            <p><strong>Período:</strong> ${formatarData(locacao.data_inicio)} a ${formatarData(locacao.data_fim)}</p>
+                            <p><strong>Valor Total:</strong> R$ ${locacao.valor_total.toFixed(2)}</p>
+                            <p><strong>Avaliação:</strong> ${statusAvaliacao}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            locacoesContainer.innerHTML = html;
+            
+            // Adicionar estilos para os badges de status
+            const style = document.createElement('style');
+            style.textContent += `
+                .badge-concluida {
+                    background-color: #e8f5e9;
+                    color: #2e7d32;
+                }
+                
+                .badge-andamento {
+                    background-color: #e3f2fd;
+                    color: #1565c0;
+                }
+                
+                .badge-agendada {
+                    background-color: #fff8e1;
+                    color: #f57f17;
+                }
+                
+                .badge-default {
+                    background-color: #f5f5f5;
+                    color: #757575;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Função para formatar data
+        function formatarData(dataString) {
+            const data = new Date(dataString);
+            return data.toLocaleDateString('pt-BR');
+        }
+        
+        // Função para obter classe CSS baseada no status
+        function getStatusClass(status) {
+            switch (status) {
+                case 'Concluída':
+                    return 'concluida';
+                case 'Em andamento':
+                    return 'andamento';
+                case 'Agendada':
+                    return 'agendada';
+                default:
+                    return 'default';
+            }
+        }
+        
+        // Função para tentar reconectar
+        function retryConnection() {
+            window.location.href = 'dashboard.html';
+        }
+        
+        // Função para logout
+        function logout() {
+            localStorage.removeItem('usuario');
+            localStorage.removeItem('token');
+            window.location.href = 'login.html?logout=success';
+        }
+    </script>
+</body>
+</html>

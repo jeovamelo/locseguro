@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Locadora - LOC Seguro</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">LOC<span>Seguro</span></a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="cadastro-locadora.html">Locadoras</a></li>
+                    <li><a href="cadastro-locatario.html">Locatários</a></li>
+                    <li><a href="cadastro-carro.html">Carros</a></li>
+                    <li><a href="cadastro-locacao.html">Locações</a></li>
+                    <li><a href="consulta-publica.html">Consulta Pública</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1 class="page-title">Cadastro de Locadora</h1>
+            
+            <div class="form-container">
+                <form id="form-locadora" action="#" method="post">
+                    <div class="form-section">
+                        <h3>Dados da Locadora (Empresa)</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-col form-col-md-6">
+                                <div class="form-group">
+                                    <label for="razao_social">Razão Social*</label>
+                                    <input type="text" id="razao_social" name="razao_social" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col form-col-md-6">
+                                <div class="form-group">
+                                    <label for="nome_fantasia">Nome Fantasia*</label>
+                                    <input type="text" id="nome_fantasia" name="nome_fantasia" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col form-col-md-6">
+                                <div class="form-group">
+                                    <label for="cnpj">CNPJ*</label>
+                                    <input type="text" id="cnpj" name="cnpj" class="form-control" placeholder="00.000.000/0000-00" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col form-col-md-6">
+                                <div class="form-group">
+                                    <label for="inscricao_estadual">Inscrição Estadual</label>
+                                    <input type="text" id="inscricao_estadual" name="inscricao_estadual" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Endereço Completo</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-col form-col-md-4">
+                                <div class="form-group">
+                                    <label for="cep">CEP*</label>
+                                    <input type="text" id="cep" name="cep" class="form-control" placeholder="00000-000" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col form-col-md-6">
+                                <div class="form-group">
+                                    <label for="rua">Rua*</label>
+                                    <input type="text" id="rua" name="rua" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col form-col-md-2">
+                                <div class="form-group">
+                                    <label for="numero">Número*</label>
+                                    <input type="text" id="numero" name="numero" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col form-col-md-4">
+                                <div class="form-group">
+                                    <label for="complemento">Complemento</label>
+                                    <input type="text" id="complemento" name="complemento" class="form-control">
+                                </div>
+                            </div>
+                            
+                            <div class="form-col form-col-md-4">
+                                <div class="form-group">
+                                    <label for="bairro">Bairro*</label>
+                                    <input type="text" id="bairro" name="bairro" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col form-col-md-3">
+                                <div class="form-group">
+                                    <label for="cidade">Cidade*</label>
+                                    <input type="text" id="cidade" name="cidade" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col form-col-md-1">
+                                <div class="form-group">
+                                    <label for="estado">Estado*</label>
+                                    <input type="text" id="estado" name="estado" class="form-control" maxlength="2" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col form-col-md-6">
+                                <div class="form-group">
+                                    <label for="telefone_comercial">Telefone Comercial*</label>
+                                    <input type="tel" id="telefone_comercial" name="telefone_comercial" class="form-control" placeholder="(00) 0000-0000" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col form-col-md-6">
+                                <div class="form-group">
+                                    <label for="email_comercial">E-mail Comercial*</label>
+                                    <input type="email" id="email_comercial" name="email_comercial" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Dados do Responsável Legal</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-col form-col-md-6">
+                                <div class="form-group">
+                                    <label for="responsavel_nome">Nome Completo*</label>
+                                    <input type="text" id="responsavel_nome" name="responsavel_nome" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col form-col-md-6">
+                                <div class="form-group">
+                                    <label for="responsavel_cpf">CPF*</label>
+                                    <input type="text" id="responsavel_cpf" name="responsavel_cpf" class="form-control" placeholder="000.000.000-00" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col form-col-md-4">
+                                <div class="form-group">
+                                    <label for="responsavel_data_nascimento">Data de Nascimento*</label>
+                                    <input type="date" id="responsavel_data_nascimento" name="responsavel_data_nascimento" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col form-col-md-4">
+                                <div class="form-group">
+                                    <label for="responsavel_telefone">Telefone Celular*</label>
+                                    <input type="tel" id="responsavel_telefone" name="responsavel_telefone" class="form-control" placeholder="(00) 00000-0000" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-col form-col-md-4">
+                                <div class="form-group">
+                                    <label for="responsavel_email">E-mail Pessoal*</label>
+                                    <input type="email" id="responsavel_email" name="responsavel_email" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">Cadastrar Locadora</button>
+                        <button type="reset" class="btn btn-secondary">Limpar Formulário</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 LOC Seguro - Sistema de Locação de Carros com Avaliação e Multa</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

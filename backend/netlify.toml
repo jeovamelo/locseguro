@@ -1,0 +1,19 @@
+# Preparação para Implantação do LOC Seguro no Netlify
+
+Este arquivo contém as configurações necessárias para a implantação do frontend do LOC Seguro no Netlify.
+
+# Redirecionamentos e configurações de SPA
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Cabeçalhos de segurança
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; connect-src 'self' https://api-locseguro.herokuapp.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"

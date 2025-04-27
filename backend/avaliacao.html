@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação Pós-Locação - LOC Seguro</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">LOC<span>Seguro</span></a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="cadastro-locadora.html">Locadoras</a></li>
+                    <li><a href="cadastro-locatario.html">Locatários</a></li>
+                    <li><a href="cadastro-carro.html">Carros</a></li>
+                    <li><a href="cadastro-locacao.html">Locações</a></li>
+                    <li><a href="consulta-publica.html">Consulta Pública</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1 class="page-title">Avaliação Pós-Locação</h1>
+            
+            <div class="form-container">
+                <form id="form-avaliacao" action="#" method="post">
+                    <div class="form-section">
+                        <h3>Selecionar Locação</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="locacao">Locação*</label>
+                                    <select id="locacao" name="locacao" class="form-control" required>
+                                        <option value="">Selecione uma locação</option>
+                                        <!-- Opções serão carregadas dinamicamente -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row mt-3">
+                            <div class="form-col">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4>Detalhes da Locação</h4>
+                                        <div id="detalhes-locacao">
+                                            <p>Selecione uma locação para ver os detalhes.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section mt-4">
+                        <h3>Avaliação feita pela Locadora sobre o Locatário</h3>
+                        
+                        <div class="rating-container">
+                            <div class="rating-header">
+                                <h4>Nota*</h4>
+                                <div class="star-rating">
+                                    <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                                    <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                                    <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                                    <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                                    <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                                    <input type="hidden" id="nota_locadora" name="nota_locadora" required>
+                                </div>
+                            </div>
+                            
+                            <div class="rating-comment">
+                                <div class="form-group">
+                                    <label for="comentario_locadora">Comentário*</label>
+                                    <textarea id="comentario_locadora" name="comentario_locadora" class="form-control" rows="3" required></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="rating-damage">
+                                <div class="form-group">
+                                    <label for="valor_prejuizo">Valor do Prejuízo (R$)</label>
+                                    <input type="number" id="valor_prejuizo" name="valor_prejuizo" class="form-control" min="0" step="0.01" value="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section mt-4">
+                        <h3>Avaliação feita pelo Locatário sobre a Locadora</h3>
+                        
+                        <div class="rating-container">
+                            <div class="rating-header">
+                                <h4>Nota*</h4>
+                                <div class="star-rating">
+                                    <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                                    <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                                    <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                                    <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                                    <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                                    <input type="hidden" id="nota_locatario" name="nota_locatario" required>
+                                </div>
+                            </div>
+                            
+                            <div class="rating-comment">
+                                <div class="form-group">
+                                    <label for="comentario_locatario">Comentário*</label>
+                                    <textarea id="comentario_locatario" name="comentario_locatario" class="form-control" rows="3" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">Finalizar Avaliação</button>
+                        <button type="reset" class="btn btn-secondary">Limpar Formulário</button>
+                    </div>
+                    
+                    <div class="alert alert-info mt-3" style="background-color: var(--light-color); padding: 1rem; border-left: 4px solid var(--info-color);">
+                        <p><strong>Importante:</strong> A locação só pode ser finalizada quando ambas as avaliações forem preenchidas.</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 LOC Seguro - Sistema de Locação de Carros com Avaliação e Multa</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

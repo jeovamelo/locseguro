@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOC Seguro - Sistema de Locação de Carros com Avaliação e Multa</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/home-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="js/demo-mode.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/home-navigation.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">LOC<span>Seguro</span></a>
+            <nav>
+                <ul>
+                    <li><a href="index.html" class="active">Início</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="cadastro.html">Cadastre-se</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="page-header">
+                <h1>Bem-vindo ao LOC Seguro</h1>
+            </div>
+            
+            <div class="hero-section">
+                <h2>Sistema de Locação de Carros com Avaliação e Multa</h2>
+                <p>O LOC Seguro é um sistema completo para gerenciamento de locação de veículos, com foco na segurança e transparência para locadoras e locatários.</p>
+            </div>
+            
+            <div class="features-section">
+                <h2>Principais Funcionalidades:</h2>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3>Cadastro de Locadoras</h3>
+                        <p>Cadastre sua empresa de locação com todos os dados necessários.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3>Cadastro de Locatários</h3>
+                        <p>Cadastre-se como locatário para alugar veículos com segurança.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <h3>Cadastro de Carros</h3>
+                        <p>Cadastre os veículos disponíveis para locação.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-file-contract"></i>
+                        </div>
+                        <h3>Cadastro de Locações</h3>
+                        <p>Registre novas locações e gerencie contratos ativos.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h3>Avaliações</h3>
+                        <p>Avalie locações concluídas e registre possíveis prejuízos.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>Consulta Pública</h3>
+                        <p>Consulte a reputação de locadoras e locatários.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cta-section">
+                <h2>Comece a usar o LOC Seguro hoje mesmo!</h2>
+                <div class="cta-buttons">
+                    <a href="cadastro.html" class="btn btn-primary">Cadastre-se</a>
+                    <a href="login.html" class="btn btn-secondary">Faça Login</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 LOC Seguro - Sistema de Locação de Carros com Avaliação e Multa</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se o usuário está logado
+            const usuario = localStorage.getItem('usuario');
+            if (usuario) {
+                try {
+                    const usuarioObj = JSON.parse(usuario);
+                    
+                    // Atualizar menu de navegação
+                    const nav = document.querySelector('header nav ul');
+                    nav.innerHTML = `
+                        <li><a href="index.html" class="active">Início</a></li>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="perfil.html">Meu Perfil</a></li>
+                        <li><a href="javascript:void(0);" onclick="logout()">Sair</a></li>
+                    `;
+                } catch (error) {
+                    console.error('Erro ao processar informações do usuário:', error);
+                }
+            }
+        });
+        
+        // Função para logout
+        function logout() {
+            localStorage.removeItem('usuario');
+            localStorage.removeItem('token');
+            window.location.href = 'login.html?logout=success';
+        }
+    </script>
+</body>
+</html>
