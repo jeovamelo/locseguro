@@ -1,0 +1,190 @@
+// Estilos para o modo de demonstração
+.demo-mode-notification {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.demo-mode-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.demo-mode-content strong {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #0056b3;
+}
+
+.demo-mode-content p {
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.demo-mode-content button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.demo-mode-content button:hover {
+    background-color: #004494;
+}
+
+.demo-mode-indicator {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: #ff9800;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Estilos para contas de demonstração */
+.demo-accounts {
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.demo-accounts h3 {
+    margin-bottom: 15px;
+    color: #0056b3;
+    font-size: 1.1rem;
+}
+
+.demo-account-tabs {
+    display: flex;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.demo-tab {
+    padding: 8px 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.demo-tab.active {
+    color: #0056b3;
+    border-bottom: 2px solid #0056b3;
+    font-weight: bold;
+}
+
+.demo-account-content {
+    display: none;
+}
+
+.demo-account-content.active {
+    display: block;
+}
+
+.demo-account {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.demo-account p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+.btn-use-account {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+.btn-use-account:hover {
+    background-color: #004494;
+}
+
+/* Estilos para mensagens de erro */
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border-left: 4px solid #c62828;
+}
+
+.error-message .error-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.error-message .error-solution {
+    margin-top: 5px;
+    font-size: 0.9rem;
+}
+
+.error-message .error-solution ul {
+    margin-top: 5px;
+    padding-left: 20px;
+}
+
+.error-message .error-solution li {
+    margin-bottom: 3px;
+}
+
+/* Estilos para mensagens de sucesso */
+.success-message {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border-left: 4px solid #2e7d32;
+}
+
+.success-message .success-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
