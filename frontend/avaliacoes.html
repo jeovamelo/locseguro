@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOC Seguro - Avaliações</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="dashboard.html" class="logo">LOC<span>Seguro</span></a>
+            <nav>
+                <ul id="menu-principal">
+                    <!-- Menu será preenchido dinamicamente com base no tipo de usuário -->
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span id="user-name">Usuário</span>
+                <button id="btn-logout" class="btn btn-sm btn-outline">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1 class="page-title">Avaliações</h1>
+            
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="avaliacoes-pendentes">Avaliações Pendentes</button>
+                <button class="tab-btn" data-tab="minhas-avaliacoes">Minhas Avaliações</button>
+                <button class="tab-btn" data-tab="avaliacoes-recebidas">Avaliações Recebidas</button>
+            </div>
+            
+            <div class="tab-content active" id="avaliacoes-pendentes">
+                <h2>Locações Pendentes de Avaliação</h2>
+                <p class="info-text">Aqui estão as locações que você ainda não avaliou. Você pode avaliar durante a locação ativa ou após o término.</p>
+                
+                <div class="card-list" id="locacoes-pendentes-list">
+                    <div class="loading">Carregando locações pendentes...</div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="minhas-avaliacoes">
+                <h2>Avaliações Realizadas</h2>
+                <p class="info-text">Aqui estão as avaliações que você já realizou.</p>
+                
+                <div class="card-list" id="avaliacoes-realizadas-list">
+                    <div class="loading">Carregando avaliações realizadas...</div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="avaliacoes-recebidas">
+                <h2>Avaliações Recebidas</h2>
+                <p class="info-text">Aqui estão as avaliações que você recebeu.</p>
+                
+                <div class="card-list" id="avaliacoes-recebidas-list">
+                    <div class="loading">Carregando avaliações recebidas...</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de Avaliação -->
+        <div class="modal" id="modal-avaliacao">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Avaliar <span id="modal-titulo-tipo"></span></h2>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-avaliacao">
+                        <input type="hidden" id="locacao-id" name="locacao_id">
+                        <input type="hidden" id="avaliacao-tipo" name="tipo">
+                        <input type="hidden" id="avaliacao-locacao-ativa" name="locacao_ativa">
+                        
+                        <div class="form-group">
+                            <label>Nota:</label>
+                            <div class="rating">
+                                <input type="radio" id="star5" name="nota" value="5" required>
+                                <label for="star5"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star4" name="nota" value="4">
+                                <label for="star4"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star3" name="nota" value="3">
+                                <label for="star3"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star2" name="nota" value="2">
+                                <label for="star2"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star1" name="nota" value="1">
+                                <label for="star1"><i class="fas fa-star"></i></label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="comentario">Comentário:</label>
+                            <textarea id="comentario" name="comentario" rows="4" required></textarea>
+                        </div>
+                        
+                        <div class="form-group" id="grupo-prejuizo">
+                            <label for="valor-prejuizo">Valor do Prejuízo (se houver):</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" id="valor-prejuizo" name="valor_prejuizo" min="0" step="0.01">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Enviar Avaliação</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 LOC Seguro - Sistema de Locação de Carros com Avaliação e Multa</p>
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticação e permissões
+            const usuario = window.api.auth.verificarAutenticacao();
+            if (!usuario) return;
+            
+            // Atualizar nome do usuário
+            document.getElementById('user-name').textContent = usuario.email;
+            
+            // Configurar botão de logout
+            document.getElementById('btn-logout').addEventListener('click', function() {
+                window.api.auth.logout();
+            });
+            
+            // Carregar menu com base no tipo de usuário
+            if (usuario.tipo === 'locadora') {
+                carregarMenuLocadora();
+                // Mostrar campo de prejuízo apenas para locadoras
+                document.getElementById('grupo-prejuizo').style.display = 'block';
+            } else {
+                carregarMenuLocatario();
+                // Ocultar campo de prejuízo para locatários
+                document.getElementById('grupo-prejuizo').style.display = 'none';
+            }
+            
+            // Carregar dados iniciais
+            carregarLocacoesPendentes();
+            
+            // Configurar tabs
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remover classe active de todos os botões e conteúdos
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    
+                    // Adicionar classe active ao botão clicado
+                    this.classList.add('active');
+                    
+                    // Mostrar conteúdo correspondente
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // Carregar dados correspondentes
+                    if (tabId === 'avaliacoes-pendentes') {
+                        carregarLocacoesPendentes();
+                    } else if (tabId === 'minhas-avaliacoes') {
+                        carregarAvaliacoesRealizadas();
+                    } else if (tabId === 'avaliacoes-recebidas') {
+                        carregarAvaliacoesRecebidas();
+                    }
+                });
+            });
+            
+            // Configurar modal de avaliação
+            const modal = document.getElementById('modal-avaliacao');
+            const modalClose = document.querySelector('.modal-close');
+            
+            modalClose.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Configurar formulário de avaliação
+            const formAvaliacao = document.getElementById('form-avaliacao');
+            
+            formAvaliacao.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const locacaoId = document.getElementById('locacao-id').value;
+                const tipo = document.getElementById('avaliacao-tipo').value;
+                const locacaoAtiva = document.getElementById('avaliacao-locacao-ativa').value === 'true';
+                const nota = document.querySelector('input[name="nota"]:checked').value;
+                const comentario = document.getElementById('comentario').value;
+                const valorPrejuizo = document.getElementById('valor-prejuizo').value || null;
+                
+                try {
+                    const token = localStorage.getItem('token');
+                    let response;
+                    
+                    if (tipo === 'locadora') {
+                        response = await fetch(`${API_URL}/avaliacoes/locadora`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                locacao_id: locacaoId,
+                                nota,
+                                comentario,
+                                valor_prejuizo: valorPrejuizo,
+                                locacao_ativa: locacaoAtiva
+                            })
+                        });
+                    } else {
+                        response = await fetch(`${API_URL}/avaliacoes/locatario`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                locacao_id: locacaoId,
+                                nota,
+                                comentario,
+                                locacao_ativa: locacaoAtiva
+                            })
+                        });
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (!data.success) {
+                        throw new Error(data.message || 'Erro ao enviar avaliação');
+                    }
+                    
+                    // Fechar modal
+                    modal.style.display = 'none';
+                    
+                    // Recarregar dados
+                    carregarLocacoesPendentes();
+                    
+                    // Mostrar mensagem de sucesso
+                    alert('Avaliação enviada com sucesso!');
+                    
+                } catch (error) {
+                    console.error('Erro ao enviar avaliação:', error);
+                    alert(error.message || 'Erro ao enviar avaliação. Tente novamente.');
+                }
+            });
+        });
+        
+        // Carregar menu para locadora
+        function carregarMenuLocadora() {
+            const menuPrincipal = document.getElementById('menu-principal');
+            
+            menuPrincipal.innerHTML = `
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="cadastro-carro.html">Cadastrar Carro</a></li>
+                <li><a href="cadastro-locacao.html">Cadastrar Locação</a></li>
+                <li><a href="avaliacoes.html" class="active">Avaliações</a></li>
+                <li><a href="consulta-publica.html">Consulta Pública</a></li>
+                <li><a href="perfil.html">Meu Perfil</a></li>
+            `;
+        }
+        
+        // Carregar menu para locatário
+        function carregarMenuLocatario() {
+            const menuPrincipal = document.getElementById('menu-principal');
+            
+            menuPrincipal.innerHTML = `
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="pesquisar-carros.html">Pesquisar Carros</a></li>
+                <li><a href="minhas-locacoes.html">Minhas Locações</a></li>
+                <li><a href="avaliacoes.html" class="active">Avaliações</a></li>
+                <li><a href="consulta-publica.html">Consulta Pública</a></li>
+                <li><a href="perfil.html">Meu Perfil</a></li>
+            `;
+        }
+        
+        // Carregar locações pendentes de avaliação
+        async function carregarLocacoesPendentes() {
+            const locacoesPendentesList = document.getElementById('locacoes-pendentes-list');
+            locacoesPendentesList.innerHTML = '<div class="loading">Carregando locações pendentes...</div>';
+            
+            try {
+                const token = localStorage.getItem('token');
+                const usuario = JSON.parse(localStorage.getItem('usuario'));
+                
+                const response = await fetch(`${API_URL}/locacoes/pendentes-avaliacao`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.message || 'Erro ao carregar locações pendentes');
+                }
+                
+                if (data.data.length === 0) {
+                    locacoesPendentesList.innerHTML = '<div class="empty-list">Não há locações pendentes de avaliação.</div>';
+                    return;
+                }
+                
+                let html = '';
+                
+                data.data.forEach(locacao => {
+                    const dataInicio = new Date(locacao.data_inicio).toLocaleDateString('pt-BR');
+                    const dataFim = locacao.data_fim ? new Date(locacao.data_fim).toLocaleDateString('pt-BR') : 'Em andamento';
+                    const locacaoAtiva = !locacao.data_fim || new Date(locacao.data_fim) > new Date();
+                    
+                    html += `
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>${usuario.tipo === 'locadora' ? locacao.locatario_nome : locacao.locadora_nome}</h3>
+                                <span class="badge ${locacaoAtiva ? 'badge-success' : 'badge-info'}">${locacaoAtiva ? 'Ativa' : 'Finalizada'}</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Carro:</strong> ${locacao.carro_marca} ${locacao.carro_modelo} (${locacao.carro_placa})</p>
+                                <p><strong>Período:</strong> ${dataInicio} a ${dataFim}</p>
+                                <p><strong>Valor:</strong> R$ ${locacao.valor_total.toFixed(2)}</p>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-primary btn-avaliar" 
+                                        data-id="${locacao.id}" 
+                                        data-tipo="${usuario.tipo === 'locadora' ? 'locatario' : 'locadora'}"
+                                        data-nome="${usuario.tipo === 'locadora' ? locacao.locatario_nome : locacao.locadora_nome}"
+                                        data-ativa="${locacaoAtiva}">
+                                    Avaliar
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                locacoesPendentesList.innerHTML = html;
+                
+                // Adicionar evento aos botões de avaliar
+                document.querySelectorAll('.btn-avaliar').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const locacaoId = this.getAttribute('data-id');
+                        const tipo = this.getAttribute('data-tipo');
+                        const nome = this.getAttribute('data-nome');
+                        const locacaoAtiva = this.getAttribute('data-ativa') === 'true';
+                        
+                        // Preencher modal
+                        document.getElementById('locacao-id').value = locacaoId;
+                        document.getElementById('avaliacao-tipo').value = tipo;
+                        document.getElementById('avaliacao-locacao-ativa').value = locacaoAtiva;
+                        document.getElementById('modal-titulo-tipo').textContent = nome;
+                        
+                        // Limpar formulário
+                        document.getElementById('form-avaliacao').reset();
+                        
+                        // Mostrar modal
+                        document.getElementById('modal-avaliacao').style.display = 'block';
+                    });
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar locações pendentes:', error);
+                locacoesPendentesList.innerHTML = `<div class="error">Erro ao carregar locações pendentes: ${error.message}</div>`;
+            }
+        }
+        
+        // Carregar avaliações realizadas
+        async function carregarAvaliacoesRealizadas() {
+            const avaliacoesRealizadasList = document.getElementById('avaliacoes-realizadas-list');
+            avaliacoesRealizadasList.innerHTML = '<div class="loading">Carregando avaliações realizadas...</div>';
+            
+            try {
+                const token = localStorage.getItem('token');
+                const usuario = JSON.parse(localStorage.getItem('usuario'));
+                
+                const response = await fetch(`${API_URL}/avaliacoes/realizadas`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.message || 'Erro ao carregar avaliações realizadas');
+                }
+                
+                if (data.data.length === 0) {
+                    avaliacoesRealizadasList.innerHTML = '<div class="empty-list">Você ainda não realizou nenhuma avaliação.</div>';
+                    return;
+                }
+                
+                let html = '';
+                
+                data.data.forEach(avaliacao => {
+                    const dataAvaliacao = new Date(avaliacao.data_avaliacao).toLocaleDateString('pt-BR');
+                    const estrelas = '★'.repeat(avaliacao.nota) + '☆'.repeat(5 - avaliacao.nota);
+                    
+                    html += `
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>${usuario.tipo === 'locadora' ? avaliacao.locatario_nome : avaliacao.locadora_nome}</h3>
+                                <span class="rating-display">${estrelas}</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Carro:</strong> ${avaliacao.carro_marca} ${avaliacao.carro_modelo} (${avaliacao.carro_placa})</p>
+                                <p><strong>Data da Avaliação:</strong> ${dataAvaliacao}</p>
+                                <p><strong>Comentário:</strong> ${avaliacao.comentario}</p>
+                                ${usuario.tipo === 'locadora' && avaliacao.valor_prejuizo ? 
+                                    `<p><strong>Valor do Prejuízo:</strong> R$ ${avaliacao.valor_prejuizo.toFixed(2)}</p>` : ''}
+                                <p><strong>Avaliação durante locação ativa:</strong> ${avaliacao.locacao_ativa ? 'Sim' : 'Não'}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                avaliacoesRealizadasList.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Erro ao carregar avaliações realizadas:', error);
+                avaliacoesRealizadasList.innerHTML = `<div class="error">Erro ao carregar avaliações realizadas: ${error.message}</div>`;
+            }
+        }
+        
+        // Carregar avaliações recebidas
+        async function carregarAvaliacoesRecebidas() {
+            const avaliacoesRecebidasList = document.getElementById('avaliacoes-recebidas-list');
+            avaliacoesRecebidasList.innerHTML = '<div class="loading">Carregando avaliações recebidas...</div>';
+            
+            try {
+                const token = localStorage.getItem('token');
+                const usuario = JSON.parse(localStorage.getItem('usuario'));
+                
+                const response = await fetch(`${API_URL}/avaliacoes/recebidas`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.message || 'Erro ao carregar avaliações recebidas');
+                }
+                
+                if (data.data.length === 0) {
+                    avaliacoesRecebidasList.innerHTML = '<div class="empty-list">Você ainda não recebeu nenhuma avaliação.</div>';
+                    return;
+                }
+                
+                let html = '';
+                
+                data.data.forEach(avaliacao => {
+                    const dataAvaliacao = new Date(avaliacao.data_avaliacao).toLocaleDateString('pt-BR');
+                    const estrelas = '★'.repeat(avaliacao.nota) + '☆'.repeat(5 - avaliacao.nota);
+                    
+                    html += `
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>${usuario.tipo === 'locadora' ? avaliacao.locatario_nome : avaliacao.locadora_nome}</h3>
+                                <span class="rating-display">${estrelas}</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Carro:</strong> ${avaliacao.carro_marca} ${avaliacao.carro_modelo} (${avaliacao.carro_placa})</p>
+                                <p><strong>Data da Avaliação:</strong> ${dataAvaliacao}</p>
+                                <p><strong>Comentário:</strong> ${avaliacao.comentario}</p>
+                                ${usuario.tipo === 'locatario' && avaliacao.valor_prejuizo ? 
+                                    `<p><strong>Valor do Prejuízo:</strong> R$ ${avaliacao.valor_prejuizo.toFixed(2)}</p>` : ''}
+                                <p><strong>Avaliação durante locação ativa:</strong> ${avaliacao.locacao_ativa ? 'Sim' : 'Não'}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                avaliacoesRecebidasList.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Erro ao carregar avaliações recebidas:', error);
+                avaliacoesRecebidasList.innerHTML = `<div class="error">Erro ao carregar avaliações recebidas: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
